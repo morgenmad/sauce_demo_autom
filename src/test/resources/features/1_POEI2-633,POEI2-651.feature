@@ -22,4 +22,5 @@ Feature: Exécution des Tests de Plan de Test POEI2-713
 		        | username | password | status |
 		        | standard_user | secret_sauce | success |
 		        | standard_user | secret_sauce | failed |
+                | standard_user | ssecret_sauce | sucess |
 		
