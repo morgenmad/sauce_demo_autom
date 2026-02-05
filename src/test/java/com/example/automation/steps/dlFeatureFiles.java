@@ -2,15 +2,19 @@ package com.example.automation.steps;
 
 import org.junit.Test;
 
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import static org.openqa.selenium.io.Zip.unzipFile;
 
 public class dlFeatureFiles {
 
-    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnQiOiJiNmNhZGQwNS1lMzQxLTNmMTctYjU1Zi00OTM0MTI4MWQ4MmEiLCJhY2NvdW50SWQiOiI3MDEyMToyNTFlNzRkOC05M2E4LTQyNWItYTk3NC02NTBiMjg3YTI0NmQiLCJpc1hlYSI6ZmFsc2UsImlhdCI6MTc3MDI4MjkwMCwiZXhwIjoxNzcwMzY5MzAwLCJhdWQiOiJFNkRGMEUxQjJDRDM0RjdFQUE3Q0ZBQUMwNjJFOThEQyIsImlzcyI6ImNvbS54cGFuZGl0LnBsdWdpbnMueHJheSIsInN1YiI6IkU2REYwRTFCMkNEMzRGN0VBQTdDRkFBQzA2MkU5OERDIn0.ecoqzLO5VQuaNovCrU4LCKKMF1lark97KyOfcelnHBo";
-    String testKeys = "POEI2-713"
+    importResultsToXray importResultsToXray = new importResultsToXray();
+    String testKeys = "POEI2-713";
+
     public static void downloadFeatureFiles(String token, String testKeys) {
         try {
             URL url = new URL("https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=" + testKeys);
@@ -20,7 +24,7 @@ public class dlFeatureFiles {
             conn.setRequestProperty("Content-Type", "application/json");
 
             InputStream inputStream = conn.getInputStream();
-            FileOutputStream outputStream = new FileOutputStream("/target/features.zip");
+            FileOutputStream outputStream = new FileOutputStream("features.zip");
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -28,13 +32,70 @@ public class dlFeatureFiles {
             }
             outputStream.close();
             inputStream.close();
+            UnzipFile("./features.zip");
         } catch (Exception e) {
             System.err.println("Erreur lors du téléchargement des fichiers feature: " + e.getMessage());
         }
     }
 
+
+    // source : https://www.baeldung.com/java-compress-and-uncompress
+
+    public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+        File destFile = new File(destinationDir, zipEntry.getName());
+
+        String destDirPath = destinationDir.getCanonicalPath();
+        String destFilePath = destFile.getCanonicalPath();
+
+        if (!destFilePath.startsWith(destDirPath + File.separator)) {
+            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+        }
+
+        return destFile;
+    }
+
+
+    public static void UnzipFile(String output) throws IOException {
+            File destDir = new File("src/test/resources/features");
+
+            byte[] buffer = new byte[1024];
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(output));
+            ZipEntry zipEntry = zis.getNextEntry();
+                while (zipEntry != null) {
+                File newFile = newFile(destDir, zipEntry);
+                if (zipEntry.isDirectory()) {
+                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                        throw new IOException("Failed to create directory " + newFile);
+                    }
+                } else {
+                    // fix for Windows-created archives
+                    File parent = newFile.getParentFile();
+                    if (!parent.isDirectory() && !parent.mkdirs()) {
+                        throw new IOException("Failed to create directory " + parent);
+                    }
+
+                    // write file content
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.close();
+            }
+            zipEntry = zis.getNextEntry();
+        }
+
+            zis.closeEntry();
+            zis.close();
+    }
+
+
     @Test
     public void xport(){
-        downloadFeatureFiles(token, );
+        downloadFeatureFiles(importResultsToXray.token,testKeys);
+
+        // je veux unzip et le mettre dans un dossier cible
     }
+
+
 }
