@@ -2,15 +2,21 @@ pipeline {
     agent any
 
     environment {
-        XRAY_CLIENT_ID     = "E6DF0E1B2CD34F7EAA7CFAAC062E98DC"
-        XRAY_CLIENT_SECRET = "95ca35b6c8cabffe5d0c5ec1653d3566a75de04b811e28a54850316c362f2be7"
+        TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnQiOiJiNmNhZGQwNS1lMzQxLTNmMTctYjU1Zi00OTM0MTI4MWQ4MmEiLCJhY2NvdW50SWQiOiI3MDEyMToyNTFlNzRkOC05M2E4LTQyNWItYTk3NC02NTBiMjg3YTI0NmQiLCJpc1hlYSI6ZmFsc2UsImlhdCI6MTc3MDYzODM3MCwiZXhwIjoxNzcwNzI0NzcwLCJhdWQiOiJFNkRGMEUxQjJDRDM0RjdFQUE3Q0ZBQUMwNjJFOThEQyIsImlzcyI6ImNvbS54cGFuZGl0LnBsdWdpbnMueHJheSIsInN1YiI6IkU2REYwRTFCMkNEMzRGN0VBQTdDRkFBQzA2MkU5OERDIn0.pK35qZm6ENDWrRVDVkQwJJUti8D6pPruQ-qyQoSsFzE"
+    }
+
+    parameters {
+        string(name: 'SELENIUM_BROWSER', defaultValue: 'CHROME')
     }
 
     stages {
 
-        stage('Checkout') {
+        stage('Export features') {
             steps {
-                echo'Projet local - pas de checkout Git'
+                echo 'Exportation des features depuis Xray...'
+                bat 'curl -H "Content-Type: application/json" -X GET -H "Authorization: Bearer %TOKEN%"  "https://xray.cloud.getxray.app/api/v1/export/cucumber?keys=POEI2-640" --output features.zip'
+                bat 'tar -xf features.zip -C src\test\resources\features'
+                bat 'del features.zip'
             }
         }
 
@@ -18,42 +24,25 @@ pipeline {
             steps {
                 echo 'Execution des tests Cucumber via Maven...'
                 bat 'mvn clean test'
-
-
             }
         }
 
-        stage('Export to Xray') {
+        stage('Import execution') {
             steps {
-                echo 'Envoi du rapport JSON vers Xray...'
-
-                // 1. Générer le token
-                bat '''
-                curl -H "Content-Type: application/json" ^
-                         -X POST ^
-                         -d "{\\"client_id\\": \\"%XRAY_CLIENT_ID%\\", \\"client_secret\\": \\"%XRAY_CLIENT_SECRET%\\"}" ^
-                         https://xray.cloud.getxray.app/api/v2/authenticate ^
-                         -o token.txt
-               '''
-
-                // Lire le token
-                bat 'set /p XRAY_TOKEN=<token.txt'
-
-                // 2. Envoyer le JSON Cucumber
-                bat '''
-                    curl -H "Authorization: Bearer %XRAY_TOKEN%" ^
-                         -H "Content-Type: application/json" ^
-                         -X POST ^
-                         --data-binary target/cucumber.json ^
-                         https://xray.cloud.getxray.app/api/v2/import/execution/cucumber
-                '''
+                echo 'Importation des résultats d'exécution vers Xray...'
+                bat 'curl -H "Content-Type: application/json" -X POST -H "Authorization: Bearer %TOKEN%"  --data @"target/cucumber.json" https://xray.cloud.getxray.app/api/v1/import/execution/cucumber'
             }
         }
     }
 
     post {
-        always {
-            echo 'Pipeline terminé'
+
+        success {
+            echo 'Tests exécutés avec succès 🎉'
+        }
+
+        failure {
+            echo 'Des tests ont échoué ❌'
         }
     }
 }
