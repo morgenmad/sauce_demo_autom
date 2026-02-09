@@ -51,9 +51,9 @@ public class Hooks {
     }
 
     @AfterClass
-    public static void toXray() throws IOException, NoSuchAlgorithmException, KeyStoreException, InterruptedException, KeyManagementException {
+     public static void toXray() throws IOException, NoSuchAlgorithmException, KeyStoreException, InterruptedException, KeyManagementException {
         // appeler remonterToXray
-        importResultsToXray.remonterVersXray();
+       // importResultsToXray.remonterVersXray();
         System.out.println("je suis passé par là");
     }
 }
