@@ -28,23 +28,25 @@ pipeline {
                 echo 'Envoi du rapport JSON vers Xray...'
 
                 // 1. Générer le token
-                bat
-                    'curl -H "Content-Type: application/json" ^
+                bat '
+                    curl -H "Content-Type: application/json" ^
                          -X POST ^
                          -d "{\"client_id\": \"%XRAY_CLIENT_ID%\", \"client_secret\": \"%XRAY_CLIENT_SECRET%\"}" ^
                          https://xray.cloud.getxray.app/api/v2/authenticate ^
-                         -o token.txt'
+                         -o token.txt
+               '
 
                 // Lire le token
                 bat 'set /p XRAY_TOKEN=<token.txt'
 
                 // 2. Envoyer le JSON Cucumber
-                bat
-                    'curl -H "Authorization: Bearer %XRAY_TOKEN%" ^
+                bat '
+                    curl -H "Authorization: Bearer %XRAY_TOKEN%" ^
                          -H "Content-Type: application/json" ^
                          -X POST ^
                          --data-binary @SauceLabCucumber/target/cucumber.json ^
-                         https://xray.cloud.getxray.app/api/v2/import/execution/cucumber'
+                         https://xray.cloud.getxray.app/api/v2/import/execution/cucumber
+                '
             }
         }
     }
