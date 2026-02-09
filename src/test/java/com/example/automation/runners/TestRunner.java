@@ -15,7 +15,22 @@ import org.junit.runner.RunWith;
         },
         plugin = { "pretty", "html:target/cucumber-reports.html","json:target/cucumber.json" },
         monochrome = true,
-        tags = "@POEI2-705"
+        tags = "@POEI2-651"
 )
-public class TestRunner {
+public class TestRunner extends Hooks{
 }
+
+/*
+ticket 810 : test exec sans ecraser le 715 cf tag en haut dans la 1_POEI2[..].feature 1 ok 1 ko
+ticket
+ */
+
+/*
+    JUnit = boss
+    Cucumber dans JUnit
+    Before Junit avant Before C
+    After C avant After J
+    JUnit controle cucumber
+    Utilité de C : traduire le Gherkin
+
+ */
