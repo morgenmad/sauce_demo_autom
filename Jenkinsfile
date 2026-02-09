@@ -5,10 +5,6 @@ pipeline {
         TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnQiOiJiNmNhZGQwNS1lMzQxLTNmMTctYjU1Zi00OTM0MTI4MWQ4MmEiLCJhY2NvdW50SWQiOiI3MDEyMToyNTFlNzRkOC05M2E4LTQyNWItYTk3NC02NTBiMjg3YTI0NmQiLCJpc1hlYSI6ZmFsc2UsImlhdCI6MTc3MDYzODM3MCwiZXhwIjoxNzcwNzI0NzcwLCJhdWQiOiJFNkRGMEUxQjJDRDM0RjdFQUE3Q0ZBQUMwNjJFOThEQyIsImlzcyI6ImNvbS54cGFuZGl0LnBsdWdpbnMueHJheSIsInN1YiI6IkU2REYwRTFCMkNEMzRGN0VBQTdDRkFBQzA2MkU5OERDIn0.pK35qZm6ENDWrRVDVkQwJJUti8D6pPruQ-qyQoSsFzE"
     }
 
-    parameters {
-        string(name: 'SELENIUM_BROWSER', defaultValue: 'CHROME')
-    }
-
     triggers {
         cron('30 14 * * 2')
     }
@@ -29,6 +25,10 @@ pipeline {
                 echo 'Execution des tests Cucumber via Maven...'
                 bat 'mvn clean test'
             }
+        }
+
+        parameters {
+                string(name: 'SELENIUM_BROWSER', defaultValue: 'CHROME')
         }
 
         stage('Import execution') {
