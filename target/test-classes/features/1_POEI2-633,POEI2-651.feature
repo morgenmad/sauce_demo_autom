@@ -27,5 +27,6 @@ Feature: Authentification
 		      Examples:
 		        | username | password | status |
 		        | standard_user | secret_sauce | success |
-		        | standard_user | secret_sauce | failed |
+		        | locked_out_user | secret_sauce | failed |
+		        
 		
