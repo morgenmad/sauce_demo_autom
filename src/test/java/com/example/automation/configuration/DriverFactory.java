@@ -3,8 +3,13 @@ package com.example.automation.configuration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +33,14 @@ public class DriverFactory {
                     prefs.put("profile.default_content_settings.popups", 0);
                     chromeOptions.addArguments("--incognito");
                     chromeOptions.setExperimentalOption("prefs", prefs);
-                    driver = new ChromeDriver(chromeOptions);
+                    EdgeOptions options1 = new EdgeOptions();
+                    try {
+                        driver = new RemoteWebDriver(new URL("http://172.16.14.190:4444/wd/hub"),options1);
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    chromeOptions.addArguments("--remote-allow-origins=*");
+
                     break;
 
                 case "FIREFOX":
