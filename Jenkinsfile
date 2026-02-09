@@ -9,16 +9,20 @@ pipeline {
         string(name: 'SELENIUM_BROWSER', defaultValue: 'CHROME')
     }
 
+    triggers {
+        cron('30 14 * * 2')
+    }
+
     stages {
 
-        stage('Export features') {
+/*        stage('Export features') {
             steps {
                 echo 'Exportation des features depuis Xray...'
                 bat 'curl -H "Content-Type: application/json" -X GET -H "Authorization: Bearer %TOKEN%"  "https://xray.cloud.getxray.app/api/v1/export/cucumber?keys=POEI2-640" --output features.zip'
                 bat 'tar -xf features.zip -C src\test\resources\features'
                 bat 'del features.zip'
             }
-        }
+        }*/
 
         stage('Build & Test') {
             steps {
