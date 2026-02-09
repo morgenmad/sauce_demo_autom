@@ -28,4 +28,5 @@ Feature: Authentification
 		        | username | password | status |
 		        | standard_user | secret_sauce | success |
 		        | locked_out_user | secret_sauce | failed |
+		        
 		
