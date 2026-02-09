@@ -35,7 +35,7 @@ public class DriverFactory {
                     chromeOptions.setExperimentalOption("prefs", prefs);
                     EdgeOptions options1 = new EdgeOptions();
                     try {
-                        driver = new RemoteWebDriver(new URL("http://172.16.14.190:4444/wd/hub"),options1);
+                        driver = new RemoteWebDriver(new URL("http://admin:admin@172.16.14.190:4444/wd/hub"),options1);
                     } catch (MalformedURLException e) {
                         throw new RuntimeException(e);
                     }
