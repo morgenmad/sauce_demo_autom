@@ -9,6 +9,10 @@ pipeline {
         string(name: 'SELENIUM_BROWSER', defaultValue: 'CHROME')
     }
 
+    triggers {
+        cron('30 14 * * 2')
+    }
+
     stages {
 
 /*        stage('Export features') {
