@@ -28,12 +28,13 @@ pipeline {
                 echo 'Envoi du rapport JSON vers Xray...'
 
                 // 1. Générer le token
-                bat 'curl -H "Content-Type: application/json" ^
+                bat '
+                        curl -H "Content-Type: application/json" ^
                          -X POST ^
                          -d "{\\"client_id\\": \\"%XRAY_CLIENT_ID%\\", \\"client_secret\\": \\"%XRAY_CLIENT_SECRET%\\"}" ^
                          https://xray.cloud.getxray.app/api/v2/authenticate ^
                          -o token.txt
-               '
+                '
 
                 // Lire le token
                 bat 'set /p XRAY_TOKEN=<token.txt'
