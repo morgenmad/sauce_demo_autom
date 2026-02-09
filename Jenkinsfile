@@ -44,7 +44,7 @@ pipeline {
                     curl -H "Authorization: Bearer %XRAY_TOKEN%" ^
                          -H "Content-Type: application/json" ^
                          -X POST ^
-                         --data-binary @SauceLabCucumber/target/cucumber.json ^
+                         --data-binary @SauceLabsGherkin/target/cucumber.json ^
                          https://xray.cloud.getxray.app/api/v2/import/execution/cucumber
                 '''
             }
