@@ -14,8 +14,7 @@ import org.junit.runner.RunWith;
                 "com.example.automation.configuration"
         },
         plugin = { "pretty", "html:target/cucumber-reports.html","json:target/cucumber.json" },
-        monochrome = true,
-        tags = "@POEI2-651"
+        monochrome = true
 )
 public class TestRunner extends Hooks{
 }
