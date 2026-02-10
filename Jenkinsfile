@@ -19,8 +19,8 @@ pipeline {
             steps {
                 echo 'Exportation des features depuis Xray...'
                 bat 'curl -H "Content-Type: application/json" -X GET -H "Authorization: Bearer %TOKEN%"  "https://xray.cloud.getxray.app/api/v1/export/cucumber?keys=%TEST_PLAN%" --output features.zip'
-                bat 'if not exist "src/test/resources/features" mkdir "src/test/resources/features"'
-                bat 'tar -xf features.zip -C src/test/resources/features'
+                bat 'if not exist "src/test/resources/features_via_jenkins" mkdir "src/test/resources/features_via_jenkins"'
+                bat 'tar -xf features.zip -C src/test/resources/features_via_jenkins'
                 bat 'del features.zip'
             }
         }
